@@ -1,0 +1,229 @@
+@import url('https://fonts.cdnfonts.com/css/public-pixel');
+
+:root {
+    --size-grid: 320px;
+    --number-divs: 20
+}
+
+body {
+    cursor: url('Mini Pixel Pack 3/160423.png'), auto;
+}
+
+.game-contenar {
+    display: grid;
+    place-content: center;
+}
+
+.grid {
+    width: var(--size-grid);
+    height: var(--size-grid);
+    border: solid 2px black;
+    display: flex;
+    flex-wrap: wrap;
+    background: url('Mini Pixel Pack 3/Space_BG (2 frames) (64 x 64).png');
+}
+
+.grid div {
+    width: calc(var(--size-grid)/var(--number-divs));
+    height: calc(var(--size-grid)/var(--number-divs));
+    box-sizing: border-box;
+}
+
+.invader {
+    background: url('Mini Pixel Pack 3/Enemies/Alan (16 x 16).png');
+    background-size: calc((var(--size-grid)/var(--number-divs))*6) calc(var(--size-grid)/var(--number-divs));
+    background-repeat: no-repeat;
+    animation: animateInvader 0.5s steps(6) infinite;
+}
+
+@keyframes animateInvader {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: calc((var(--size-grid)/var(--number-divs))*-6) 0;
+    }
+}
+
+.shooter {
+    background: url('Mini Pixel Pack 3/Player ship/Player_ship (16 x 16).png');
+    background-size: calc((var(--size-grid)/var(--number-divs))*3) calc(var(--size-grid)/var(--number-divs));
+    background-repeat: no-repeat;
+    background-position: calc((var(--size-grid)/var(--number-divs)*-1)) 0;
+}
+
+/* .shooter.idle {
+    background-position: -32px 0;
+} */
+
+.shooter.left {
+    background-position: 0 0;
+}
+
+.shooter.right {
+    background-position: calc((var(--size-grid)/var(--number-divs))*-2) 0;
+}
+
+.laser {
+    background: url('Mini Pixel Pack 3/Projectiles/Player_charged_beam (16 x 16).png');
+    background-size: calc((var(--size-grid)/var(--number-divs))*2) calc(var(--size-grid)/var(--number-divs));
+    background-repeat: no-repeat;
+    /* animation: animateLaser 0.5s steps(2) infinite; */
+}
+
+/* @keyframes animateLaser {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: calc((var(--size-grid)/var(--number-divs)*-1)) 0;
+    }
+} */
+
+.boom {
+    background: url('Mini Pixel Pack 3/Effects/Explosion (16 x 16).png');
+    background-size: calc((var(--size-grid)/var(--number-divs))*6) calc(var(--size-grid)/var(--number-divs));
+    background-repeat: no-repeat;
+    animation: animateBoom 0.5s steps(6) infinite;
+}
+
+.firechip {
+    background: url('Mini Pixel Pack 3/Player ship/Boosters (16 x 16).png');
+    background-size: calc((var(--size-grid)/var(--number-divs))*2) calc(var(--size-grid)/var(--number-divs));
+    background-repeat: no-repeat;
+    animation: animatefirechip 0.5s steps(2) infinite;
+}
+
+.invader-stopped {
+    /* animation: none; */
+    animation: blink 0.5s infinite;
+}
+
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+}
+
+@keyframes animatefirechip {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: calc((var(--size-grid)/var(--number-divs)*-2)) 0;
+    }
+}
+
+h1 {
+    font-family: 'Public Pixel', sans-serif;
+}
+
+@keyframes animateBoom {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: calc((var(--size-grid)/var(--number-divs))*-6) 0;
+    }
+}
+
+
+/* menu css ================================> */
+.menu {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 8px;
+    display: none; 
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    z-index: 1000;
+  }
+  
+  .menu button {
+    font-family: 'Public Pixel', sans-serif;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    background-color: #1122a2;
+    color: white;
+  }
+  
+  .menu button:hover {
+    background-color: #686770;
+  }
+  
+  .menu-button {
+    font-family: 'Public Pixel', sans-serif;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #000000;
+    color: white;
+    cursor: pointer;
+    z-index: 1000;
+  }
+  
+  .menu-button:hover {
+    background-color: #a29ea5;
+  }
+  
+
+  
+
+  /* history css from here *********************> */
+
+
+/* Hide the story div initially */
+.hidden {
+    display: none;
+}
+
+/* Style for the story container */
+#story-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 600px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Style for the continue button */
+#continue-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#continue-button:hover {
+    background-color: #218838;
+}
