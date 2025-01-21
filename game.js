@@ -11,6 +11,8 @@ const invaderSpeed = 150
 let laserId
 let explosions = []
 let isGameOver = false
+let isStoryActve = false
+let isPaused = false
 
 for (let i = 0; i < width * width; i++) {
     const square = document.createElement('div')
@@ -20,9 +22,11 @@ for (let i = 0; i < width * width; i++) {
 
 const squares = Array.from(document.querySelectorAll('.grid div'))
 
-let  enemiesInvaders = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+let enemiesInvaders = [
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-    40, 41, 42, 43, 44, 45, 46, 47, 48, 49] 
+    40, 41, 42, 43, 44, 45, 46, 47, 48, 49
+]
 
 function draw() {
     for (let i = 0; i < enemiesInvaders.length; i++) {
@@ -48,8 +52,11 @@ function remove() {
     }
 }
 
+// let paused = false 
+
 function movePlayer(eve) {
-    if (isGameOver) return 
+    if (isGameOver) return
+    if (isPaused) return
     squares[playerIndex].classList.remove("shooter", "left", "right")
     squares[playerIndex + width].classList.remove('firechip')
 
@@ -73,21 +80,23 @@ function movePlayer(eve) {
             }
             break
     }
+
+
     squares[playerIndex].classList.add("shooter")
     squares[playerIndex + width].classList.add('firechip')
+
 }
 
 function stopAnimation(grid) {
 
     grid.forEach(square => {
-        if(square.classList.contains('invader')) {
+        if (square.classList.contains('invader')) {
             square.classList.add('invader-stopped')
         }
-        
-    });
-    
-}
 
+    });
+
+}
 document.addEventListener('keydown', movePlayer)
 
 function moveInvaders(timestamp) {
@@ -107,12 +116,16 @@ function moveInvaders(timestamp) {
             return
         }
         if (enemiesInvaders.length === enemiesRemoved.length) {
-            let Bo=document.querySelector('.boom')
-            console.log(Bo);
-            
+
+            let Bo = document.querySelector('.boom')
+            // console.log(Bo);
+
             Bo.remove()
             resultDisplay.innerHTML = 'YOU WIN'
             isGameOver = true
+            // playerWon = true
+            // console.log('djkhfdjhk');
+
             return
         }
 
@@ -190,28 +203,33 @@ const menu = document.getElementById('menu')
 const resumeBtn = document.getElementById('resumeBtn')
 const restartBtn = document.getElementById('restartBtn')
 const menuButton = document.getElementById('menuButton')
-let isPaused = false
 
 function gameLoop(timestamp) {
     if (isGameOver || isPaused) {
         return
     }
-    // if(!isStoryActve) {
-    //     return
-    // }
 
-    if(storyPhase === 0 && !isStoryActve) {
+    if (storyPhase === 0 && !isStoryActve) {
+        // isPaused = true
         showStory()
-        
+
     }
 
-    // if(storyPhase === 1 && && playerScore >= 500 && !isStoryActve) {
-    //     showStory()
-    // }
+    // isPaused = false 
 
-    // if(storyPhase === 2 && isGameOver && playerWon && !isStoryActve) {
-    //     showStory()
-    // }
+    if (storyPhase === 1 && results === 25 && !isStoryActve) {
+        // isPaused = true
+        showStory()
+    }
+
+    // console.log('player won',playerWon);
+    // console.log('isgameover',isGameOver);
+
+    if (storyPhase === 2 && enemiesInvaders.length === enemiesRemoved.length) {
+        // console.log('11');
+
+        showStory()
+    }
 
 
     moveInvaders(timestamp)
@@ -220,26 +238,89 @@ function gameLoop(timestamp) {
     requestAnimationFrame(gameLoop)
 }
 
-menuButton.addEventListener('click', () => {
+function toggleMenu() {
     if (menu.style.display === 'flex') {
-        menu.style.display = 'none' 
+        menu.style.display = 'none'
         isPaused = false
-        requestAnimationFrame(gameLoop) 
+        requestAnimationFrame(gameLoop)
     } else {
         menu.style.display = 'flex'
         isPaused = true
     }
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        toggleMenu()
+    }
 })
+
+menuButton.addEventListener('click', () => {
+    toggleMenu()
+})
+
+
 
 resumeBtn.addEventListener('click', () => {
     isPaused = false
     menu.style.display = 'none'
-    requestAnimationFrame(gameLoop) 
+    requestAnimationFrame(gameLoop)
 })
 
+// history from here!!! ===================**************************************>
 
 
-//restart mn hnaaaaa
+
+const story = {
+    intro: "Welcome! Aliens are invading Earth. As the last hero, it's your job to defend it!",
+    development: "Great job! You've cleared the first wave, but more are coming. Keep going!",
+    conclusionWin: "Congratulations! You've defeated the alien invaders and saved the planet!",
+    conclusionLose: "Game Over. The aliens have conquered Earth. Better luck next time!",
+};
+
+let storyContainer = document.getElementById('story-container')
+let continueButton = document.getElementById('continue-button')
+
+let storyPhase = 0
+
+function showStory() {
+    isPaused = true
+    const storyTexts = [
+        "Welcome to Space Invaders! Defend the Earth from alien invaders!",
+        "Halfway there! Keep fighting, the fate of humanity depends on you!",
+        "Congratulations! You have defeated the invaders and saved the Earth!"
+    ]
+    let storyText = storyTexts[storyPhase]
+    let storyTextElement = document.getElementById('story-text')
+
+    storyTextElement.textContent = storyText
+    storyContainer.classList.remove('hidden')
+    isStoryActve = true
+
+    continueButton.onclick = () => {
+        storyContainer.classList.add('hidden')
+
+        isStoryActve = false
+        isPaused = false
+        // isGoingRight = false
+
+        storyPhase++
+        // if(storyPhase === 1) { 
+        // console.log('44');        
+        requestAnimationFrame(gameLoop)
+        // }
+    }
+}
+
+function hideStory() {
+    storyContainer.classList.add('hidden')
+}
+continueButton.addEventListener('click', hideStory)
+
+
+
+
+//restart mn hnaaaaa===============================>
 
 restartBtn.addEventListener('click', () => {
     enemiesRemoved.length = 0
@@ -269,52 +350,6 @@ restartBtn.addEventListener('click', () => {
 });
 
 
-// history from here!!! ===================**************************************>
-
-
-const story = {
-    intro: "Welcome! Aliens are invading Earth. As the last hero, it's your job to defend it!",
-    development: "Great job! You've cleared the first wave, but more are coming. Keep going!",
-    conclusionWin: "Congratulations! You've defeated the alien invaders and saved the planet!",
-    conclusionLose: "Game Over. The aliens have conquered Earth. Better luck next time!",
-};
-
-let storyContainer = document.getElementById('story-container')
-let continueButton= document.getElementById('continue-button')
-
-let isStoryActve = false 
-let storyPhase = 0
-
-function showStory() {
-    // console.log(story);
-    const storyTexts = [
-        "Welcome to Space Invaders! Defend the Earth from alien invaders!",
-        "Halfway there! Keep fighting, the fate of humanity depends on you!",
-        "Congratulations! You have defeated the invaders and saved the Earth!"
-    ]
-    let storyText = storyTexts[storyPhase]
-    let storyTextElement = document.getElementById('story-text')
-
-    storyTextElement.textContent = storyText
-    storyContainer.classList.remove('hidden')
-    isStoryActve = true
-
-    continueButton.onclick = () => {
-        storyContainer.classList.add('hidden')
-        isStoryActve  = false 
-
-        storyPhase++
-        if(storyPhase === 1) {
-            requestAnimationFrame(gameLoop)
-        }
-    }
-
-}
-
-function hideStory() {
-    storyContainer.classList.add('hidden')
-}
-continueButton.addEventListener('click', hideStory)
 
 
 draw()
