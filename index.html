@@ -10,22 +10,34 @@
 </head>
 
 <body>
-    <!-- storyyyy -->
-    <div id="story-container" class="hidden">
+      <!-- storyyyy -->
+      <div id="story-container" class="hidden">
         <p id="story-text">Story Here . . . </p>
         <button id="continue-button">Continue</button>
-    </div>    
-    <div class="game-contenar">
-        <h1 class="result">0</h1>
-        <div class="grid"></div>
     </div>
+    <!-- menu -->
     <div class="menu" id="menu">
         <button id="resumeBtn">Resume</button>
         <button id="restartBtn">Restart</button>
-      </div>
-      <button id="menuButton" class="menu-button">Menu</button>
-      
-    <script src="game.js"></script>
+    </div>
+    <button id="menuButton" class="menu-button">Menu</button>
+    <div class="container">
+        <div class="popup-box">
+            <h1 class="retro-text">game over</h1>
+            <p>zrbo 3lik (try again)</p>
+            <button class="btn-popup">replay</button>
+        </div>
+    </div>
+    <div class="game-contenar">
+        <div class="topGame">
+            <h3 class="result">0</h3>
+            <p><span id="minutes">00</span>:<span id="second">00</span></p>
+            <div class="helth">
+            </div>
+        </div>
+        <div class="grid"></div>
+    </div>
+    <script type="module" src="game.js"></script>
 </body>
 
 </html>
