@@ -17,7 +17,7 @@ body {
     /* cursor: url('Mini Pixel Pack 3/UI objects/Player_life_icon (16 x 16).png') 32 32, auto; */
     background-color: rgb(29, 29, 29);
     opacity: 0.9;
-    /* bac0.kground: url('Mini Pixel Pack 3/Space_BG (2 frames) (64 x 64).png'); */
+        /* bac0.kground: url('Mini Pixel Pack 3/Space_BG (2 frames) (64 x 64).png'); */
 }
 
 .game-contenar {
@@ -293,6 +293,9 @@ body {
 .menu-button:hover {
     background-color: #a29ea5;
 }
+.result{
+    color: greenyellow;
+}
 
 
 /* history css from here *********************> */
@@ -351,7 +354,7 @@ body {
 
 }
 
-#rest-btn {
+/* #rest-btn {
     margin-top: 20px;
     padding: 10px 20px;
     background-color: white;
@@ -360,12 +363,4 @@ body {
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-}
-
-.hidden2{
-    display: none;
-}
-/* 
-.hidden3{
-    display: none;
 } */

@@ -3,52 +3,70 @@ import { ELEMNT } from "./status.js";
 import { squares } from "./game.js";
 
 export const utils = {
-    resize: function () {
-        let size = Math.min(window.innerHeight, window.innerWidth)
-        if (size > 100) {
-            document.documentElement.style.setProperty('--size-grid', `${size - utils.percentage(20, size)}px`);
-        }
-    },
+  resize: function () {
+    let size = Math.min(window.innerHeight, window.innerWidth);
 
-    percentage: function (num, per) {
-        return Math.round((num / 100) * per)
-    },
+    if (size > 100) {
+      document.documentElement.style.setProperty(
+        "--size-grid",
+        `${size - utils.percentage(20, size)}px`
+      );
+    }
+  },
 
-    remove: function () {
-        for (let idx of Status.enemiesInvaders) {
-            squares[idx]?.classList.remove('invader')
-        }
-    },
+  percentage: function (num, per) {
+    return Math.round((num / 100) * per);
+  },
 
-    iconHelth: function () {
-        let inner = ""
-        for (let i = 0; i < Status.helthPlayer; i++) {
-            inner += '<img class="heart" src="Mini Pixel Pack 3/Icons/HUD_Icons-20.png" alt="">'
-        }
-        ELEMNT.helthIcon.innerHTML = inner
-    },
-    draw: function () {
-        for (let i = 0; i < Status.enemiesInvaders.length; i++) {
-            if (!Status.enemiesRemoved.includes(i)) {
-                squares[Status.enemiesInvaders[i]]?.classList.add('invader')
-            }
-        }
-    },
+  remove: function () {
+    for (let idx of Status.enemiesInvaders) {
+      squares[idx]?.classList.remove("invader");
+    }
+  },
 
-    resetStatus: function () {
-        Status.isGoingRight = true
-        Status.direction = 1
-        Status.enemiesRemoved = []
-        // Status.enemiesInvaders= [0, 1, 2]
-        Status.enemiesInvaders = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-            20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-            40, 41, 42, 43, 44, 45, 46, 47, 48, 49]
-    },
+  iconHelth: function () {
+    let inner = "";
+    for (let i = 0; i < Status.helthPlayer; i++) {
+      inner +=
+        '<img class="heart" src="Mini Pixel Pack 3/Icons/output-onlinepngtools.png" alt="">';
 
-    // ahiti history functions are here hhhhhhh ====================>
+    }
+    ELEMNT.helthIcon.innerHTML = inner;
+  },
+  losedLive: function () {
+    utils.remove();
+    utils.resetStatus();
+    squares[Status.playerIndex + Status.width].classList.remove("firechip");
+    Status.helthPlayer -= 1;
+    Status.invaderSpeed -= utils.percentage(10, Status.invaderSpeed);
+    utils.iconHelth();
+  },
+  draw: function () {
+    for (let i = 0; i < Status.enemiesInvaders.length; i++) {
+      if (Status.enemiesInvaders[i] > Status.width * Status.width) {
+        utils.losedLive()
+        return;
+      }
 
-    hideStory: function () {
-        ELEMNT.storyContainer.classList.add('hidden')
-    },
-    
+      if (!Status.enemiesRemoved.includes(i)) {
+        squares[Status.enemiesInvaders[i]]?.classList.add("invader");
+      }
+    }
+  },
+
+  resetStatus: function () {
+    Status.isGoingRight = true;
+    Status.direction = 1;
+    Status.enemiesRemoved = [];
+    Status.enemiesInvaders = [
+      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 40,
+      41, 42, 43, 44, 45, 46, 47, 48, 49,
+    ];
+  },
+  
+  // ahiti history functions are here hhhhhhh ====================>
+
+  hideStory: function () {
+    ELEMNT.storyContainer.classList.add('hidden')
+  },
 }

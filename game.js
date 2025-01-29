@@ -3,16 +3,15 @@ import { Status } from "./status.js"
 import { ELEMNT } from "./status.js"
 import { utils } from "./utils.js";
 
-const width = 20
 export let squares = []
 
 setInterval(() => {
     let rndm = Math.random() * (11 - 6) + 6;
-    document.body.style.opacity = 1
-}, 16.7)
+    document.body.style.opacity = rndm / 10
+}, 16)
 
 function build() {
-    for (let i = 0; i < width * width; i++) {
+    for (let i = 0; i < Status.width * Status.width; i++) {
         const square = document.createElement('div')
         square.dataset.idx = i
         ELEMNT.grid.appendChild(square)
@@ -24,7 +23,6 @@ build()
 function start() {
     utils.remove()
     utils.resetStatus()
-    // Status.playerIndex= 349
     Status.isGameOver = false
     Status.helthPlayer = 3
     Status.scor = 0
@@ -38,7 +36,7 @@ function start() {
     chrono.startChrono()
 
     squares[Status.playerIndex].classList.add("shooter")
-    squares[Status.playerIndex + width].classList.add('firechip')
+    squares[Status.playerIndex + Status.width].classList.add('firechip')
 }
 
 function movePlayer(eve) {
@@ -46,11 +44,11 @@ function movePlayer(eve) {
     if (eve.key !== 'ArrowLeft' && eve.key !== 'ArrowRight' && eve.key !== ' ') return
 
     squares[Status.playerIndex].classList.remove("shooter", "left", "right")
-    squares[Status.playerIndex + width].classList.remove('firechip')
+    squares[Status.playerIndex + Status.width].classList.remove('firechip')
 
     switch (eve.key) {
         case 'ArrowLeft':
-            if (Status.playerIndex % width !== 0) {
+            if (Status.playerIndex % Status.width !== 0) {
                 Status.playerIndex -= 1
                 squares[Status.playerIndex].classList.add("shooter", "left")
                 setTimeout(() => {
@@ -59,7 +57,7 @@ function movePlayer(eve) {
             }
             break
         case 'ArrowRight':
-            if (Status.playerIndex % width < width - 1) {
+            if (Status.playerIndex % Status.width < Status.width - 1) {
                 Status.playerIndex += 1
                 squares[Status.playerIndex].classList.add("shooter", "right")
                 setTimeout(() => {
@@ -74,34 +72,30 @@ function movePlayer(eve) {
             break
     }
     squares[Status.playerIndex].classList.add("shooter")
-    squares[Status.playerIndex + width].classList.add('firechip')
+    squares[Status.playerIndex + Status.width].classList.add('firechip')
 }
 
 
 function moveInvaders(timestamp) {
     if (!Status.lastInvaderMoveTime) Status.lastInvaderMoveTime = timestamp
     const progress = timestamp - Status.lastInvaderMoveTime
+    // - helth
+    if (squares[Status.playerIndex].classList.contains('invader')) {
+        utils.losedLive()
+    }
+    //game over
+    if (Status.helthPlayer === 0) {
+        Status.isGameOver = true
+        ELEMNT.popup.classList.add('active')
+        chrono.stopChrono()
+        return
+    }
 
     if (progress >= Status.invaderSpeed) {
         Status.lastInvaderMoveTime = timestamp
-        const leftEdge = Status.enemiesInvaders[0] % width === 0
-        const rightEdge = Status.enemiesInvaders[Status.enemiesInvaders.length - 1] % width === width - 1
-        //game over
-        if (Status.helthPlayer === 0) {
-            Status.isGameOver = true
-            ELEMNT.popup.classList.add('active')
-            chrono.stopChrono()
-            return
-        }
-        // - helth
-        if (squares[Status.playerIndex].classList.contains('invader')) {
-            utils.remove()
-            utils.resetStatus()
-            squares[Status.playerIndex + width].classList.remove('firechip')
-            Status.helthPlayer -= 1
-            Status.invaderSpeed -= utils.percentage(10, Status.invaderSpeed)
-            utils.iconHelth()
-        }
+        const leftEdge = Status.enemiesInvaders[0] % Status.width === 0
+        const rightEdge = Status.enemiesInvaders[Status.enemiesInvaders.length - 1] % Status.width === Status.width - 1
+
         // next level
         if (Status.enemiesInvaders.length === Status.enemiesRemoved.length) {
             utils.resetStatus()
@@ -111,14 +105,14 @@ function moveInvaders(timestamp) {
         utils.remove()
         if (rightEdge && Status.isGoingRight) {
             for (let i = 0; i < Status.enemiesInvaders.length; i++) {
-                Status.enemiesInvaders[i] += width + 1
+                Status.enemiesInvaders[i] += Status.width + 1
                 Status.direction = -1
                 Status.isGoingRight = false
             }
         }
         if (leftEdge && !Status.isGoingRight) {
             for (let i = 0; i < Status.enemiesInvaders.length; i++) {
-                Status.enemiesInvaders[i] += width - 1
+                Status.enemiesInvaders[i] += Status.width - 1
                 Status.direction = 1
                 Status.isGoingRight = true
             }
@@ -133,9 +127,9 @@ function moveInvaders(timestamp) {
 function moveRocket() {
     if (Status.laserId !== undefined) {
         squares[Status.laserId].classList.remove('laser')
-        if (Status.laserId >= width) {
-            Status.laserId -= width
-            if (Status.laserId > width) squares[Status.laserId].classList.add('laser')
+        if (Status.laserId >= Status.width) {
+            Status.laserId -= Status.width
+            if (Status.laserId > Status.width) squares[Status.laserId].classList.add('laser')
         }
     }
 
@@ -148,7 +142,7 @@ function moveRocket() {
         Status.scor++
         ELEMNT.resultDisplay.innerHTML = Status.scor
         Status.laserId = undefined
-    } else if (Status.laserId !== undefined && Status.laserId < width) {
+    } else if (Status.laserId !== undefined && Status.laserId < Status.width) {
         Status.laserId = undefined
     }
 }
@@ -168,16 +162,21 @@ function handleExplosions(timestamp) {
 }
 
 ELEMNT.btnPopup.addEventListener("click", () => {
-    ELEMNT.popup.classList.remove('active')
-    Status.storyPhase = 0
-    start()
-    gameLoop()
+    setTimeout(() => {
+        ELEMNT.popup.classList.remove('active')
+        Status.storyPhase = 0
+        start()
+        gameLoop()
+    }, 500)
+    // ELEMNT.popup.classList.remove('active')
+    // Status.storyPhase = 0
+    // start()
+    // gameLoop()
 })
 
 // ahiti menu start here ==================================================================>
 
-ELEMNT.menuButton.onclick = () => {
-    if(Status.isStoryActve) return 
+ELEMNT.menuButton.addEventListener('click', () => {
     if (ELEMNT.menu.style.display === 'flex') {
         ELEMNT.menu.style.display = 'none'
         Status.isPaused = false
@@ -187,22 +186,23 @@ ELEMNT.menuButton.onclick = () => {
         Status.isPaused = true
         chrono.stopChrono()
     }
-}
+})
 
-ELEMNT.resumeBtn.onclick = () => {
+ELEMNT.resumeBtn.addEventListener('click', () => {
     Status.isPaused = false
     ELEMNT.menu.style.display = 'none'
     chrono.startChrono()
     gameLoop()
-}
+})
 
-ELEMNT.restartBtn.onclick = () => {
+ELEMNT.restartBtn.addEventListener('click', () => {
     ELEMNT.menu.style.display = 'none'
     Status.isPaused = false
-    Status.storyPhase = 0
     start()
     gameLoop()
-}
+});
+
+// history from hereee =====================>
 
 function showStory() {
     Status.isPaused = true
@@ -223,9 +223,7 @@ function showStory() {
         requestAnimationFrame(gameLoop)
     }
 }
-
 ELEMNT.continueButton.addEventListener('click', utils.hideStory)
-
 
 function gameLoop(timestamp) {
     if (Status.isGameOver || Status.isPaused) return
@@ -238,7 +236,24 @@ function gameLoop(timestamp) {
         showStory()
     }
 
+
     if (Status.storyPhase === 2 && Status.enemiesInvaders.length === Status.enemiesRemoved.length) {
+      
+        // setTimeout(() => {
+        //     showStory()
+        // ELEMNT.continueButton.textContent = "restart"
+
+        // ELEMNT.continueButton.onclick = () => {
+        //     utils.hideStory()
+        //     Status.isPaused = false
+        //     Status.storyPhase = 0
+        //     start()
+        //     gameLoop()
+        //     ELEMNT.continueButton.textContent = "Continue"
+        //     showStory()
+        // }
+        // }, 500);
+
         showStory()
         ELEMNT.continueButton.textContent = "restart"
 
@@ -260,9 +275,19 @@ function gameLoop(timestamp) {
     requestAnimationFrame(gameLoop)
 }
 
-start()
-console.log('startend');
 
+
+
+// function gameLoop(timestamp) {
+//     if (Status.isGameOver || Status.isPaused) return
+
+//     moveInvaders(timestamp)
+//     moveRocket()
+//     handleExplosions(timestamp)
+//     requestAnimationFrame(gameLoop)
+// }
+
+start()
 window.addEventListener("resize", utils.resize)
 document.addEventListener('keydown', movePlayer)
 requestAnimationFrame(gameLoop)
